@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <!-- Molex logo: a stylized mole (крот) in M3 style -->
+  <defs>
+    <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6750C4"/>
+      <stop offset="100%" stop-color="#4F378A"/>
+    </linearGradient>
+    <linearGradient id="noseGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFB4A8"/>
+      <stop offset="100%" stop-color="#FF8979"/>
+    </linearGradient>
+  </defs>
+  <!-- Body (rounded mole shape) -->
+  <ellipse cx="96" cy="104" rx="52" ry="56" fill="url(#bodyGrad)"/>
+  <!-- Head -->
+  <ellipse cx="96" cy="72" rx="40" ry="38" fill="url(#bodyGrad)"/>
+  <!-- Snout -->
+  <ellipse cx="96" cy="84" rx="20" ry="16" fill="#4F378A"/>
+  <!-- Nose -->
+  <ellipse cx="96" cy="80" rx="8" ry="6" fill="url(#noseGrad)"/>
+  <!-- Eyes -->
+  <circle cx="78" cy="64" r="5" fill="#1D1B20"/>
+  <circle cx="114" cy="64" r="5" fill="#1D1B20"/>
+  <!-- Eye shine -->
+  <circle cx="80" cy="62" r="2" fill="white" opacity="0.8"/>
+  <circle cx="116" cy="62" r="2" fill="white" opacity="0.8"/>
+  <!-- Whiskers -->
+  <line x1="68" y1="78" x2="44" y2="72" stroke="#4F378A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="68" y1="82" x2="42" y2="84" stroke="#4F378A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="124" y1="78" x2="148" y2="72" stroke="#4F378A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="124" y1="82" x2="150" y2="84" stroke="#4F378A" stroke-width="2" stroke-linecap="round"/>
+  <!-- Ears -->
+  <ellipse cx="56" cy="46" rx="18" ry="14" fill="#4F378A"/>
+  <ellipse cx="136" cy="46" rx="18" ry="14" fill="#4F378A"/>
+  <ellipse cx="56" cy="46" rx="10" ry="8" fill="#D0BCFF"/>
+  <ellipse cx="136" cy="46" rx="10" ry="8" fill="#D0BCFF"/>
+  <!-- Paws -->
+  <ellipse cx="68" cy="156" rx="18" ry="10" fill="#4F378A"/>
+  <ellipse cx="124" cy="156" rx="18" ry="10" fill="#4F378A"/>
+  <!-- Claws -->
+  <circle cx="56" cy="156" r="4" fill="#D0BCFF"/>
+  <circle cx="60" cy="160" r="4" fill="#D0BCFF"/>
+  <circle cx="64" cy="162" r="4" fill="#D0BCFF"/>
+  <circle cx="128" cy="156" r="4" fill="#D0BCFF"/>
+  <circle cx="132" cy="160" r="4" fill="#D0BCFF"/>
+  <circle cx="136" cy="162" r="4" fill="#D0BCFF"/>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <!-- Molex incognito mascot: mole with sunglasses -->
+  <defs>
+    <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1D1B20"/>
+      <stop offset="100%" stop-color="#0D0B10"/>
+    </linearGradient>
+    <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8DEF8"/>
+      <stop offset="100%" stop-color="#CAC4D0"/>
+    </linearGradient>
+  </defs>
+  <!-- Body -->
+  <ellipse cx="96" cy="104" rx="52" ry="56" fill="#1D1B20"/>
+  <!-- Head -->
+  <ellipse cx="96" cy="72" rx="40" ry="38" fill="#1D1B20"/>
+  <!-- Snout -->
+  <ellipse cx="96" cy="84" rx="20" ry="16" fill="#0D0B10"/>
+  <!-- Nose -->
+  <ellipse cx="96" cy="80" rx="8" ry="6" fill="#FFB4A8"/>
+  <!-- Sunglasses -->
+  <rect x="58" y="56" width="76" height="28" rx="14" fill="url(#glassGrad)" opacity="0.9"/>
+  <line x1="96" y1="62" x2="96" y2="78" stroke="#6750C4" stroke-width="2"/>
+  <rect x="62" y="60" width="30" height="20" rx="8" fill="none" stroke="#6750C4" stroke-width="1.5"/>
+  <rect x="100" y="60" width="30" height="20" rx="8" fill="none" stroke="#6750C4" stroke-width="1.5"/>
+  <!-- Glass reflection -->
+  <line x1="68" y1="64" x2="68" y2="72" stroke="white" stroke-width="1.5" opacity="0.3"/>
+  <line x1="106" y1="64" x2="106" y2="72" stroke="white" stroke-width="1.5" opacity="0.3"/>
+  <!-- Whiskers -->
+  <line x1="68" y1="78" x2="44" y2="72" stroke="#0D0B10" stroke-width="2" stroke-linecap="round"/>
+  <line x1="68" y1="82" x2="42" y2="84" stroke="#0D0B10" stroke-width="2" stroke-linecap="round"/>
+  <line x1="124" y1="78" x2="148" y2="72" stroke="#0D0B10" stroke-width="2" stroke-linecap="round"/>
+  <line x1="124" y1="82" x2="150" y2="84" stroke="#0D0B10" stroke-width="2" stroke-linecap="round"/>
+  <!-- Ears -->
+  <ellipse cx="56" cy="46" rx="18" ry="14" fill="#0D0B10"/>
+  <ellipse cx="136" cy="46" rx="18" ry="14" fill="#0D0B10"/>
+  <!-- Paws -->
+  <ellipse cx="68" cy="156" rx="18" ry="10" fill="#0D0B10"/>
+  <ellipse cx="124" cy="156" rx="18" ry="10" fill="#0D0B10"/>
+</svg>

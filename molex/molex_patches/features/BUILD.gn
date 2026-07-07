@@ -1,0 +1,11 @@
+source_set("molex_features") {
+  sources = [
+    "molex_features.h",
+    "molex_features.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//build:build_config",
+  ]
+}

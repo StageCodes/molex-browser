@@ -1,0 +1,76 @@
+name: Build Molex (Linux)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup depot_tools
+        run: |
+          git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git
+          echo "$PWD/depot_tools" >> $GITHUB_PATH
+
+      - name: Cache upstream source
+        uses: actions/cache@v4
+        with:
+          path: mol/
+          key: mol-src-${{ runner.os }}-${{ hashFiles('molex_patches/**') }}
+          restore-keys: |
+            mol-src-${{ runner.os }}-
+
+      - name: Fetch upstream
+        run: |
+          if [ ! -d mol/src/.git ]; then
+            mkdir -p mol
+            cd mol
+            fetch --nohooks chromium
+          else
+            cd mol/src
+            git pull
+            gclient sync
+          fi
+
+      - name: Install dependencies
+        run: |
+          cd mol/src
+          sudo ./build/install-build-deps.sh --no-prompt --no-arm
+          gclient runhooks
+
+      - name: Apply Molex patches
+        run: |
+          bash build/apply_patches.sh "$PWD/mol/src"
+
+      - name: Generate GN project
+        run: |
+          cd mol/src
+          gn gen out/molex --args='
+            is_official_build=true
+            is_debug=false
+            symbol_level=0
+            proprietary_codecs=true
+            ffmpeg_branding="Chrome"
+            enable_widevine=true
+            branding="molex"
+          '
+
+      - name: Build Molex
+        run: |
+          cd mol/src
+          ninja -C out/molex chrome
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: molex-linux-amd64
+          path: mol/src/out/molex/chrome
+          retention-days: 30

@@ -1,0 +1,27 @@
+import("//build/config/features.gni")
+
+source_set("m3_theme") {
+  sources = [
+    "m3_color_scheme.h",
+    "m3_color_scheme.cc",
+    "m3_shape_tokens.h",
+    "m3_shape_tokens.cc",
+    "m3_typography.h",
+    "m3_typography.cc",
+    "m3_theme.h",
+    "m3_theme.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//skia",
+    "//ui/gfx",
+    "//ui/color",
+    "//ui/native_theme",
+    "//ui/views",
+  ]
+
+  public_deps = [
+    "//ui/gfx",
+  ]
+}

@@ -1,0 +1,109 @@
+name: Build Molex (Windows)
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup depot_tools
+        run: |
+          git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git "$env:USERPROFILE\depot_tools"
+          echo "$env:USERPROFILE\depot_tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: pwsh
+
+      - name: Cache upstream source
+        uses: actions/cache@v4
+        with:
+          path: mol/
+          key: mol-win-src-${{ hashFiles('molex_patches/**') }}
+          restore-keys: |
+            mol-win-src-
+
+      - name: Fetch upstream
+        run: |
+          if (-not (Test-Path "mol\src\.git")) {
+            New-Item -ItemType Directory -Path mol -Force | Out-Null
+            Set-Location mol
+            fetch --nohooks --no-history chromium
+          } else {
+            Set-Location mol\src
+            git pull
+            gclient sync
+          }
+        shell: pwsh
+        env:
+          DEPOT_TOOLS_WIN_TOOLCHAIN: 0
+
+      - name: Run hooks
+        run: |
+          Set-Location mol\src
+          gclient runhooks
+        shell: pwsh
+        env:
+          DEPOT_TOOLS_WIN_TOOLCHAIN: 0
+
+      - name: Apply Molex patches
+        run: |
+          $MOLEX = (Get-Item .).FullName
+          $SRC = "$MOLEX\mol\src"
+
+          New-Item -ItemType Directory -Path "$SRC\molex" -Force | Out-Null
+          Copy-Item -Recurse "$MOLEX\molex_patches" "$SRC\molex\" -Force
+
+          New-Item -ItemType Directory -Path "$SRC\chrome\app\theme\molex" -Force | Out-Null
+          Copy-Item "$MOLEX\molex_patches\branding\icons\molex_logo.svg" "$SRC\chrome\app\theme\molex\" -Force
+
+          if (Test-Path "$SRC\chrome\app") {
+            Get-ChildItem "$SRC\chrome\app" -Filter "*exe*main*" -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
+              (Get-Content $_.FullName) -replace '"Chromium"', '"Molex"' -replace '"Chrome"', '"Molex"' | Set-Content $_.FullName
+            }
+          }
+          $ccPath = "$SRC\chrome\common\chrome_constants.cc"
+          if (Test-Path $ccPath) {
+            (Get-Content $ccPath) -replace 'CHROMIUM', 'PRODUCT_NAME' -replace '"Chromium"', '"Molex"' | Set-Content $ccPath
+          }
+          $viPath = "$SRC\components\version_info\version_info.cc"
+          if (Test-Path $viPath) {
+            (Get-Content $viPath) -replace '"Chromium"', '"Molex"' | Set-Content $viPath
+          }
+
+          Add-Content "$SRC\BUILD.gn" @"
+group("molex") {
+  deps = [
+    "//molex/molex_patches/ui/material_you:m3_theme",
+    "//molex/molex_patches/features:molex_features",
+  ]
+}
+"@
+        shell: pwsh
+
+      - name: Configure GN
+        run: |
+          Set-Location mol\src
+          gn gen out/molex --args="is_official_build=true is_debug=false symbol_level=0 proprietary_codecs=true ffmpeg_branding=`"Chrome`" enable_widevine=true branding=`"molex`""
+        shell: pwsh
+        env:
+          DEPOT_TOOLS_WIN_TOOLCHAIN: 0
+
+      - name: Build Molex
+        run: |
+          Set-Location mol\src
+          ninja -C out/molex chrome
+        shell: pwsh
+        env:
+          DEPOT_TOOLS_WIN_TOOLCHAIN: 0
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: molex-windows-x64
+          path: mol\src\out\molex\chrome.exe
+          retention-days: 30

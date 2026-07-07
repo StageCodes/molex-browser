@@ -1,0 +1,17 @@
+visual_elements_icons = [
+  "//chrome/app/theme/molex/logo_16.png",
+  "//chrome/app/theme/molex/logo_32.png",
+  "//chrome/app/theme/molex/logo_48.png",
+  "//chrome/app/theme/molex/logo_64.png",
+  "//chrome/app/theme/molex/logo_128.png",
+  "//chrome/app/theme/molex/logo_256.png",
+]
+
+visual_elements_product_icons = [
+  "product_logo_16.png",
+  "product_logo_32.png",
+  "product_logo_48.png",
+  "product_logo_64.png",
+  "product_logo_128.png",
+  "product_logo_256.png",
+]

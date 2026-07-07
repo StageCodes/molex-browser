@@ -1,0 +1,13 @@
+branding = "molex"
+branding_path_component = "molex"
+
+chrome_product_short_name = "Molex"
+chrome_product_full_name = "Molex Browser"
+chrome_product_description = "Material You 3 browser"
+chrome_product_abbreviation = "Molex"
+chrome_product_url = "https://molex-browser.dev"
+
+chrome_app_icon = "//chrome/app/theme/molex/logo_128.png"
+
+chrome_vendor = "Molex"
+chrome_vendor_url = "https://molex-browser.dev"
