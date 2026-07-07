@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: mol/
-          key: mol-src-${{ runner.os }}-${{ hashFiles('molex_patches/**') }}
+          key: mol-src-${{ runner.os }}-${{ hashFiles('molex/molex_patches/**') }}
           restore-keys: |
             mol-src-${{ runner.os }}-
 
@@ -48,7 +48,7 @@ jobs:
 
       - name: Apply Molex patches
         run: |
-          bash build/apply_patches.sh "$PWD/mol/src"
+          bash molex/build/apply_patches.sh "$PWD/mol/src"
 
       - name: Generate GN project
         run: |

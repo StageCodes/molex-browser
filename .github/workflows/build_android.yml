@@ -22,7 +22,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: mol/
-          key: mol-android-src-${{ runner.os }}-${{ hashFiles('molex_patches/**') }}
+          key: mol-android-src-${{ runner.os }}-${{ hashFiles('molex/molex_patches/**') }}
 
       - name: Fetch upstream (Android)
         run: |
@@ -43,7 +43,7 @@ jobs:
 
       - name: Apply Molex patches
         run: |
-          bash build/apply_patches.sh "$PWD/mol/src"
+          bash molex/build/apply_patches.sh "$PWD/mol/src"
 
       - name: Build Molex APK
         run: |

@@ -23,7 +23,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: mol/
-          key: mol-win-src-${{ hashFiles('molex_patches/**') }}
+          key: mol-win-src-${{ hashFiles('molex/molex_patches/**') }}
           restore-keys: |
             mol-win-src-
 
@@ -56,10 +56,10 @@ jobs:
           $SRC = "$MOLEX\mol\src"
 
           New-Item -ItemType Directory -Path "$SRC\molex" -Force | Out-Null
-          Copy-Item -Recurse "$MOLEX\molex_patches" "$SRC\molex\" -Force
+          Copy-Item -Recurse "$MOLEX\molex\molex_patches" "$SRC\molex\" -Force
 
           New-Item -ItemType Directory -Path "$SRC\chrome\app\theme\molex" -Force | Out-Null
-          Copy-Item "$MOLEX\molex_patches\branding\icons\molex_logo.svg" "$SRC\chrome\app\theme\molex\" -Force
+          Copy-Item "$MOLEX\molex\molex_patches\branding\icons\molex_logo.svg" "$SRC\chrome\app\theme\molex\" -Force
 
           if (Test-Path "$SRC\chrome\app") {
             Get-ChildItem "$SRC\chrome\app" -Filter "*exe*main*" -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
