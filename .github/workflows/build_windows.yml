@@ -81,7 +81,7 @@ jobs:
       - name: Configure GN
         run: |
           Set-Location mol\src
-          gn gen out/molex --args="is_official_build=true is_debug=false symbol_level=0 proprietary_codecs=true ffmpeg_branding=`"Chrome`" enable_widevine=true branding=`"molex`""
+          gn gen out/molex --args='is_official_build=true is_debug=false symbol_level=0 proprietary_codecs=true ffmpeg_branding="Chrome" enable_widevine=true branding="molex"'
         shell: pwsh
         env:
           DEPOT_TOOLS_WIN_TOOLCHAIN: 0
