@@ -1,6 +1,6 @@
 name: Build Molex (Android)
 
-on:
+"on":
   push:
     branches: [main]
   schedule:

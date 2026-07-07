@@ -1,6 +1,6 @@
 name: Build Molex (Windows)
 
-on:
+"on":
   push:
     branches: [main]
   schedule:
@@ -75,14 +75,7 @@ jobs:
             (Get-Content $viPath) -replace '"Chromium"', '"Molex"' | Set-Content $viPath
           }
 
-          Add-Content "$SRC\BUILD.gn" @"
-group("molex") {
-  deps = [
-    "//molex/molex_patches/ui/material_you:m3_theme",
-    "//molex/molex_patches/features:molex_features",
-  ]
-}
-"@
+          Get-Content "$MOLEX\molex\build\append_root_build.gn" | Add-Content "$SRC\BUILD.gn"
         shell: pwsh
 
       - name: Configure GN

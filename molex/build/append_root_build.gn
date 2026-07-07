@@ -1,0 +1,7 @@
+
+group("molex") {
+  deps = [
+    "//molex/molex_patches/ui/material_you:m3_theme",
+    "//molex/molex_patches/features:molex_features",
+  ]
+}
