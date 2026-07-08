@@ -15,6 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /opt/hostedtoolcache
+          df -h /
+
       - name: Setup depot_tools
         run: |
           git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git
@@ -58,6 +63,7 @@ jobs:
             is_debug=false
             symbol_level=0
             proprietary_codecs=true
+            chrome_pgo_phase=0
             ffmpeg_branding="Chrome"
             enable_widevine=true
             branding="molex"
