@@ -1,5 +1,3 @@
-import("//build/config/features.gni")
-
 source_set("m3_theme") {
   sources = [
     "m3_color_scheme.h",

@@ -6,6 +6,5 @@ source_set("molex_features") {
 
   deps = [
     "//base",
-    "//build:build_config",
   ]
 }
