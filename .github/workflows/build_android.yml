@@ -31,13 +31,14 @@ jobs:
 
       - name: Fetch upstream (Android)
         run: |
-          if [ ! -d mol/src/.git ]; then
+          if [ -d mol/src/.git ] && [ -f mol/src/build/install-build-deps-android.sh ]; then
+            cd mol/src
+            gclient sync
+          else
+            rm -rf mol
             mkdir -p mol
             cd mol
             fetch --nohooks --no-history android
-          else
-            cd mol/src
-            gclient sync
           fi
 
       - name: Install dependencies
