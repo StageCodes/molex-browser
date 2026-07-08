@@ -33,7 +33,7 @@ jobs:
           if [ ! -d mol/src/.git ]; then
             mkdir -p mol
             cd mol
-            fetch --nohooks chromium
+            fetch --nohooks --no-history chromium
           else
             cd mol/src
             git pull
