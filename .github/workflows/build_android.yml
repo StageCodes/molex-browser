@@ -66,6 +66,7 @@ jobs:
             symbol_level=0
             target_os="android"
             target_cpu="arm64"
+            toolkit_views=true
             proprietary_codecs=true
             chrome_pgo_phase=0
             ffmpeg_branding="Chrome"
