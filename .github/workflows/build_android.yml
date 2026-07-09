@@ -56,9 +56,20 @@ jobs:
           fi
           cd mol/src && gclient runhooks
 
-      - name: Apply Molex patches
+      - name: Apply Molex patches (branding only, no M3 Views)
         run: |
-          bash molex/build/apply_patches.sh "$PWD/mol/src"
+          SRC="$PWD/mol/src"
+          mkdir -p "$SRC/chrome/app/theme/molex"
+          cp molex/molex_patches/branding/icons/molex_logo.svg "$SRC/chrome/app/theme/molex/"
+          for s in 16 32 48 64 128 256; do
+            if command -v rsvg-convert &>/dev/null; then
+              rsvg-convert -w "$s" -h "$s" molex/molex_patches/branding/icons/molex_logo.svg > "$SRC/chrome/app/theme/molex/logo_${s}.png"
+              rsvg-convert -w "$((s*2))" -h "$((s*2))" molex/molex_patches/branding/icons/molex_logo.svg > "$SRC/chrome/app/theme/molex/logo_${s}@2x.png"
+            fi
+          done
+          find "$SRC/chrome/app" -name "*exe*main*" -exec sed -i 's/"Chromium"/"Molex"/g; s/"Chrome"/"Molex"/g' {} + 2>/dev/null || true
+          sed -i 's/"Chromium"/"Molex"/g' "$SRC/chrome/common/chrome_constants.cc" 2>/dev/null || true
+          sed -i 's/"Chromium"/"Molex"/g' "$SRC/components/version_info/version_info.cc" 2>/dev/null || true
 
       - name: Build Molex APK
         run: |
@@ -71,7 +82,6 @@ jobs:
             optimize_for_size=true
             target_os="android"
             target_cpu="arm64"
-            toolkit_views=true
             proprietary_codecs=true
             chrome_pgo_phase=0
             ffmpeg_branding="Chrome"
