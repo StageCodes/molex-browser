@@ -64,6 +64,8 @@ jobs:
             is_official_build=false
             is_debug=false
             symbol_level=0
+            blink_symbol_level=0
+            optimize_for_size=true
             target_os="android"
             target_cpu="arm64"
             toolkit_views=true

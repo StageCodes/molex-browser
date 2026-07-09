@@ -60,11 +60,14 @@ bash "$SCRIPT_DIR/apply_patches.sh" "$SRC_DIR/src"
 
 echo "==> Generating build directory..."
 gn gen out/molex --args='
-  is_official_build=true
+  is_official_build=false
   is_debug=false
   symbol_level=0
+  blink_symbol_level=0
+  optimize_for_size=true
   use_system_xcode=false
   proprietary_codecs=true
+  chrome_pgo_phase=0
   ffmpeg_branding="Chrome"
   enable_widevine=true
   branding="molex"
