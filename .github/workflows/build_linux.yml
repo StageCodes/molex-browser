@@ -59,7 +59,7 @@ jobs:
         run: |
           cd mol/src
           gn gen out/molex --args='
-            is_official_build=true
+            is_official_build=false
             is_debug=false
             symbol_level=0
             proprietary_codecs=true

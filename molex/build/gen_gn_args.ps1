@@ -1,7 +1,7 @@
 param([string]$OutDir = "out/molex")
 $null = New-Item -ItemType Directory -Path $OutDir -Force
 $lines = @(
-  "is_official_build = true",
+  "is_official_build = false",
   "is_debug = false",
   "symbol_level = 0",
   "proprietary_codecs = true",

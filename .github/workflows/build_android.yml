@@ -43,9 +43,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd mol/src
-          sudo ./build/install-build-deps-android.sh
-          gclient runhooks
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq openjdk-17-jdk zip unzip libgl1-mesa-dev 2>/dev/null
+          if [ -f mol/src/build/install-build-deps-android.sh ]; then
+            cd mol/src && sudo ./build/install-build-deps-android.sh --no-prompt
+          else
+            echo "Warning: install-build-deps-android.sh not found, installing manually"
+            sudo apt-get install -y -qq libc6:i386 libncurses5:i386 libstdc++6:i386 2>/dev/null || true
+          fi
+          cd mol/src && gclient runhooks
 
       - name: Apply Molex patches
         run: |
@@ -55,7 +61,7 @@ jobs:
         run: |
           cd mol/src
           gn gen out/molex-android --args='
-            is_official_build=true
+            is_official_build=false
             is_debug=false
             symbol_level=0
             target_os="android"
