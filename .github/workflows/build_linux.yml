@@ -18,6 +18,9 @@ jobs:
       - name: Free up disk space
         run: |
           sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /opt/hostedtoolcache
+          sudo rm -rf /usr/local/lib/android /usr/share/swift /usr/local/share/powershell
+          sudo rm -rf /opt/microsoft /usr/share/miniconda /usr/local/julia* /opt/pipx
+          du -sh / 2>/dev/null || true
           df -h /
 
       - name: Setup depot_tools
@@ -35,14 +38,14 @@ jobs:
 
       - name: Fetch upstream
         run: |
-          if [ ! -d mol/src/.git ]; then
+          if [ -d mol/src/.git ] && [ -f mol/src/BUILD.gn ]; then
+            cd mol/src
+            gclient sync --nohooks --no-history
+          else
+            rm -rf mol
             mkdir -p mol
             cd mol
             fetch --nohooks --no-history chromium
-          else
-            cd mol/src
-            git pull
-            gclient sync
           fi
 
       - name: Install dependencies

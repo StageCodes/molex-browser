@@ -16,6 +16,9 @@ jobs:
       - name: Free up disk space
         run: |
           sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /opt/hostedtoolcache
+          sudo rm -rf /usr/local/lib/android /usr/share/swift /usr/local/share/powershell
+          sudo rm -rf /opt/microsoft /usr/share/miniconda /usr/local/julia* /opt/pipx
+          du -sh / 2>/dev/null || true
           df -h /
 
       - name: Setup depot_tools
