@@ -1,0 +1,134 @@
+task:
+  name: Build Molex (Linux)
+
+  compute_engine_instance:
+    image_project: cirrus-images
+    image: family/docker-k8s
+    platform: linux
+    cpu: 8
+    memory: 16G
+    disk: 100
+
+  env:
+    PATH: /tmp/depot_tools:${PATH}
+    DEPOT_TOOLS_WIN_TOOLCHAIN: 0
+
+  setup_script: |
+    apt-get update -qq
+    apt-get install -y -qq git python3 python3-pip curl wget file \
+      libglib2.0-dev libgtk-3-dev libpango1.0-dev libcairo2-dev \
+      libdbus-1-dev libx11-xcb-dev libxcomposite-dev libxdamage-dev \
+      libxext-dev libxfixes-dev libxi-dev libxrandr-dev libxrender-dev \
+      libxscrnsaver-dev libxtst-dev libdrm-dev libpulse-dev libnss3-dev \
+      libnspr4-dev libasound2-dev libatk1.0-dev libatspi2.0-dev librsvg2-bin 2>/dev/null
+
+  clone_script: |
+    if [ ! -d /tmp/depot_tools ]; then
+      git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /tmp/depot_tools
+    fi
+
+  fetch_script: |
+    if [ ! -d mol/src/.git ]; then
+      mkdir -p mol
+      cd mol
+      fetch --nohooks --no-history chromium
+    else
+      cd mol/src
+      gclient sync --nohooks --no-history
+    fi
+
+  patches_script: |
+    bash molex/build/apply_patches.sh "$PWD/mol/src"
+
+  gen_script: |
+    cd mol/src
+    gn gen out/molex --args='
+      is_official_build=false
+      is_debug=false
+      symbol_level=0
+      blink_symbol_level=0
+      optimize_for_size=true
+      proprietary_codecs=true
+      chrome_pgo_phase=0
+      ffmpeg_branding="Chrome"
+      enable_widevine=true
+      branding="molex"
+    '
+
+  build_script: |
+    cd mol/src
+    ninja -C out/molex chrome
+
+  binary_artifacts:
+    path: mol/src/out/molex/chrome
+
+
+task:
+  name: Build Molex (Android)
+
+  compute_engine_instance:
+    image_project: cirrus-images
+    image: family/docker-k8s
+    platform: linux
+    cpu: 8
+    memory: 16G
+    disk: 100
+
+  env:
+    PATH: /tmp/depot_tools:${PATH}
+
+  setup_script: |
+    apt-get update -qq
+    apt-get install -y -qq git python3 python3-pip curl wget file unzip zip \
+      openjdk-17-jdk libgl1-mesa-dev 2>/dev/null
+    mkdir -p /tmp/depot_tools
+    git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /tmp/depot_tools
+
+  fetch_script: |
+    if [ ! -d mol/src/.git ]; then
+      rm -rf mol
+      mkdir -p mol
+      cd mol
+      fetch --nohooks --no-history android
+    else
+      cd mol/src
+      gclient sync --nohooks --no-history
+    fi
+
+  deps_script: |
+    if [ -f mol/src/build/install-build-deps-android.sh ]; then
+      cd mol/src && yes | ./build/install-build-deps-android.sh --no-prompt
+    fi
+    cd mol/src && gclient runhooks
+
+  patches_script: |
+    SRC="$PWD/mol/src"
+    mkdir -p "$SRC/chrome/app/theme/molex"
+    cp molex/molex_patches/branding/icons/molex_logo.svg "$SRC/chrome/app/theme/molex/"
+    rsvg-convert -w 48 -h 48 molex/molex_patches/branding/icons/molex_logo.svg > "$SRC/chrome/app/theme/molex/logo_48.png" 2>/dev/null || true
+    sed -i 's/"Chromium"/"Molex"/g; s/"Chrome"/"Molex"/g' "$SRC/chrome/common/chrome_constants.cc" 2>/dev/null || true
+    sed -i 's/"Chromium"/"Molex"/g' "$SRC/components/version_info/version_info.cc" 2>/dev/null || true
+
+  gen_script: |
+    cd mol/src
+    gn gen out/molex-android --args='
+      is_official_build=false
+      is_debug=false
+      symbol_level=0
+      blink_symbol_level=0
+      optimize_for_size=true
+      target_os="android"
+      target_cpu="arm64"
+      proprietary_codecs=true
+      chrome_pgo_phase=0
+      ffmpeg_branding="Chrome"
+      enable_widevine=true
+      branding="molex"
+    '
+
+  build_script: |
+    cd mol/src
+    ninja -C out/molex-android chrome_public_apk
+
+  apk_artifacts:
+    path: mol/src/out/molex-android/apks/*.apk
