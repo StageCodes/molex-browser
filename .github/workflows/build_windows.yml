@@ -50,6 +50,29 @@ jobs:
         env:
           DEPOT_TOOLS_WIN_TOOLCHAIN: 0
 
+      - name: Setup ccache
+        run: |
+          choco install ccache -y --no-progress
+        shell: pwsh
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~\.ccache
+          key: ccache-win-${{ hashFiles('molex/molex_patches/**') }}-${{ github.sha }}
+          restore-keys: |
+            ccache-win-${{ hashFiles('molex/molex_patches/**') }}-
+            ccache-win-
+
+      - name: Configure ccache
+        run: |
+          ccache -M 3G
+          ccache -o compression=true
+          ccache -o compression_level=6
+          ccache -o sloppiness=time_macros,include_file_mtime,include_file_ctime
+          ccache -z
+        shell: pwsh
+
       - name: Apply Molex patches
         run: |
           $MOLEX = (Get-Item .).FullName

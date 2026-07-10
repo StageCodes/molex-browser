@@ -48,8 +48,9 @@ jobs:
             fetch --nohooks --no-history chromium
           fi
 
-      - name: Install dependencies
+      - name: Install build dependencies
         run: |
+          sudo apt-get install -y -qq ccache 2>/dev/null || true
           cd mol/src
           sudo ./build/install-build-deps.sh --no-prompt --no-arm
           gclient runhooks
@@ -57,6 +58,24 @@ jobs:
       - name: Apply Molex patches
         run: |
           bash molex/build/apply_patches.sh "$PWD/mol/src"
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ccache-lin-${{ hashFiles('molex/molex_patches/**') }}-${{ github.sha }}
+          restore-keys: |
+            ccache-lin-${{ hashFiles('molex/molex_patches/**') }}-
+            ccache-lin-
+
+      - name: Configure ccache
+        run: |
+          ccache -M 6G
+          ccache -o compression=true
+          ccache -o compression_level=6
+          ccache -o sloppiness=time_macros,include_file_mtime,include_file_ctime
+          ccache -o cache_dir=$HOME/.ccache
+          ccache -z
 
       - name: Generate GN project
         run: |
@@ -67,6 +86,7 @@ jobs:
             symbol_level=0
             blink_symbol_level=0
             optimize_for_size=true
+            cc_wrapper="ccache"
             proprietary_codecs=true
             chrome_pgo_phase=0
             ffmpeg_branding="Chrome"
@@ -79,7 +99,12 @@ jobs:
           cd mol/src
           ninja -C out/molex chrome
 
+      - name: Show ccache stats
+        if: always()
+        run: ccache -sv
+
       - name: Upload build artifacts
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: molex-linux-amd64
